@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/> <!--(Meterializecss) Deixa o site responsivo -->
+<html ng-app="myModule"> <!--ng-app="Module_Name" serve para utilizar o modulo que criou para este html -->    
+    <head>
+        <title>Angular JS</title>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css"> <!--(Meterializecss) Utilizando css do materialize -->
+    </head>    
+    <body ng-controller="indexController"> <!--ng-controller="indexController" serve para utilizar os dados criados na controlle indexController-->        
+        <header>
+            <!--<h2>{{titulo}}</h2> Pode usar {{}} para utilizar a variavel da controller, mas é bom sempre utilizar o ng-bind-->
+            <h2 ng-bind="titulo"></h2>
+            <table class="striped">
+                <thead>
+                    <tr>
+                        <th>Nome</th>
+                        <th>E-mail</th>
+                        <th>Nota 1</th>
+                        <th>Nota 2</th>
+                        <th>Nota 3</th>
+                        <th>Media</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="aluno in alunos"> <!--ng-repeat serve pra demonstrar uma lista-->
+                        <td ng-bind="aluno.nome"></td>
+                        <td ng-bind="aluno.email"></td>
+                        <td ng-bind="aluno.nota1"></td>
+                        <td ng-bind="aluno.nota2"></td>
+                        <td ng-bind="aluno.nota3"></td>
+                        <td>0</td>
+                    </tr>
+                </tbody>
+            </table>
+        </header>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script> <!--(Meterializecss) -->
+        <script src="lib/angular/angular.min.js"></script> <!--importa a classe para utilizar o Angular JS -->
+        <script type="text/javascript">
+            angular.module("myModule", [])
+            .controller("indexController", function($scope){
+                $scope.titulo = "Hello Word !";
+                
+                $scope.alunos = [
+                    {nome: "Andrei", email: "andrei@hotmail.com", nota1: 10, nota2: 0, nota3: 4},
+                    {nome: "Aline", email: "aline@hotmail.com", nota1: 2, nota2: 4, nota3: 10},
+                    {nome: "Mayara", email: "mayara@hotmail.com", nota1: 8, nota2: 10, nota3: 7},
+                    {nome: "José", email: "jose@hotmail.com", nota1: 0, nota2: 10, nota3: 8},
+                ];
+
+                $scope.media = function(){
+                }
+            })            
+        </script>
+    </body>
+</html>
