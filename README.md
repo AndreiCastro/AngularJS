@@ -1,1 +1,1 @@
-Projeto de estudo com AngularJS utilizando MAterialize para CSS
+Projeto de estudo com AngularJS utilizando Materialize para CSS
