@@ -7,15 +7,25 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css"> <!--(Meterializecss) Utilizando css do materialize -->
     </head>
 
-    <body ng-controller="indexController"> <!--ng-controller="indexController" serve para utilizar os dados criados na controlle indexController-->        
+    <body ng-controller="indexController"> <!--ng-controller="indexController" serve para utilizar a controlle indexController-->        
+        
+        <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script> <!--(Meterializecss) -->
+
+        <script src="lib/angular/angular.min.js"></script> <!--Import class para utilizar o Angular JS -->
+        <script src="js/materialize/init.js"> </script> <!--Import a inicialização do materialize que coloquei nesse path-->
+        <script src="js/app/app.js"> </script> <!--Import module-->
+        <script src="js/app/controllers.js"> </script> <!--Import controller-->
+        
+
         <header class="container"> <!--class="container" é do materialize-->
-            <!--<h2>{{titulo}}</h2> Pode usar {{}} para utilizar a variavel da controller, mas é bom sempre utilizar o ng-bind-->
             <h2 ng-bind="titulo"></h2>
+            <!--<h2>{{titulo}}</h2> Pode usar {{}} para utilizar a variavel da controller, mas é bom sempre utilizar o ng-bind-->            
         </header>
         <main class="container">
             <div class="row"> <!--class="row" é do materialize-->
-                <input type="text" placeholder="Filtros para todos os campos" ng-model="busca">
-                <!-- <input type="text" ng-model="busca.nome">Filtra only o campo nome, se colcar busca.email only email ... -->
+                <input type="text" placeholder="Filtros para todos os campos" ng-model="filtroBusca">
+                <!-- <input type="text" ng-model="filtroBusca.nome">Filtra only o campo nome, se colcar busca.email only email ... -->
             </div>
             <table class="striped">
                 <thead>
@@ -30,15 +40,18 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr ng-repeat="aluno in alunos | filter:busca"> <!--ng-repeat serve pra demonstrar uma lista - ]
-                        | filter variavel - serve para filtar, e estou usando a variavel criada no input text ng-model="busca" -->
+                    <tr ng-repeat="aluno in alunos | filter:filtroBusca"> <!--ng-repeat serve pra demonstrar uma lista - ]
+                        | filter variavel - serve para filtar, e estou usando a variavel criada no input text ng-model="filtroBusca" -->
                         <td ng-bind="aluno.nome"></td>
                         <td ng-bind="aluno.email"></td>
                         <td ng-bind="aluno.nota1"></td>
                         <td ng-bind="aluno.nota2"></td>
                         <td ng-bind="aluno.nota3"></td>
                         <td ng-bind="aluno.media"></td>
-                        <td><button ng-click="updateAluno(aluno)" class="btn blue">Editar</button></td>
+                        <td>
+                            <button ng-click="updateAluno(aluno)" class="btn blue">Editar</button>
+                            <button ng-click="deleteAluno(aluno)" class="btn red">Deletar</button>
+                        </td>
                     </tr>
                 </tbody>
             </table>
@@ -47,10 +60,10 @@
             </div>
         </main>
         
-        <!-- Modal Structure -->
+        <!-- Modal -->
         <div id="modalRef" class="modal">
             <div class="modal-content">
-                <h4 ng-if="!editando">Adicionar Aluno</h4>                
+                <h4 ng-if="!editando">Adicionar Aluno</h4> <!-- ng-if com a variavel editando para exibir a label correta-->               
                 <h4 ng-if="editando">Editar Aluno</h4>
                 <p>Preencha os dados do Aluno</p>
                 <div class="row">                    
@@ -78,89 +91,5 @@
             </div>
         </div>
 
-        <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script> <!--(Meterializecss) -->
-        <script src="lib/angular/angular.min.js"></script> <!--importa a classe para utilizar o Angular JS -->
-        
-        
-        <script >
-             $(document).ready(function(){
-                 $('.modal').modal();
-             });
-        </script>
-
-        <script type="text/javascript">
-            angular.module("myModule", [])
-            .controller("indexController", function($scope){
-                $scope.titulo = "Site com AngularJS";
-                
-                $scope.alunos = [
-                    {nome: "Andrei", email: "andrei@hotmail.com", nota1: 10, nota2: 0, nota3: 4},
-                    {nome: "Aline", email: "aline@hotmail.com", nota1: 2, nota2: 4, nota3: 10},
-                    {nome: "Mayara", email: "mayara@hotmail.com", nota1: 8, nota2: 10, nota3: 7},
-                    {nome: "José", email: "jose@hotmail.com", nota1: 0, nota2: 10, nota3: 8},
-                    {nome: "Maria", email: "maria@hotmail.com", nota1: 5, nota2: 8, nota3: 6}
-                ];
-
-                var init = function(){
-                    $scope.alunos.forEach(function(aluno){
-                        aluno.media = calculaMedia(aluno);
-                    });
-                    limpaForm();
-                };                
-
-                $scope.openModal = function(edicao){
-                    
-                    if(!edicao){
-                        $scope.editando = false;
-                        limpaForm(); 
-                    }
-
-                    $('#modalRef').modal('open');                    
-                };
-
-                $scope.closeModal = function(){
-                    limpaForm();
-                    $('#modalRef').modal('close');
-                };
-
-                $scope.addAluno = function(Aluno){
-                    Aluno.media = calculaMedia(Aluno);
-                    $scope.alunos.push(Aluno);                    
-                    $scope.closeModal();
-                    limpaForm();                    
-                };
-
-                $scope.editando = false;
-                var alunoEditar;
-
-                $scope.updateAluno = function(Aluno){
-                    $scope.editando = true;
-                    angular.copy(Aluno, $scope.Aluno);                    
-                    $scope.openModal(true);
-                    alunoEditar = Aluno;
-                };
-
-                $scope.saveAluno = function(Aluno){
-                    alunoEditar.nome = Aluno.nome;
-                    alunoEditar.email = Aluno.email;
-                    alunoEditar.nota1 = Aluno.nota1;
-                    alunoEditar.nota2 = Aluno.nota2;
-                    alunoEditar.nota3 = Aluno.nota3;                    
-                    alunoEditar.media = calculaMedia(Aluno);
-                    $scope.closeModal();
-                };
-
-                var limpaForm = function(){
-                    $scope.Aluno = {nome: "", email: "", nota1: '', nota2: '', nota3: ''};
-                };
-
-                var calculaMedia = function(Aluno){
-                    return ((Aluno.nota1 + Aluno.nota2 + Aluno.nota3) / 3).toFixed(2);
-                };
-
-                init();  //function iniciada somente 1 vezes ao abrir a tela
-            })            
-        </script>
     </body>
 </html>
